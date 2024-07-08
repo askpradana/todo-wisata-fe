@@ -1,26 +1,28 @@
-# Wisata App
-
-## Senior Software Engineer Technical Test
-
-> [!NOTE]
-> You have the liberty to interpret the requirements in your own way. Anything that is not explicitly mandated in the requirements is up to your creativity and personal interpretation. We encourage you to be innovative and showcase your unique approach to solving the problems presented. This is your opportunity to demonstrate your problem-solving skills and creativity.
-
-> [!IMPORTANT]
-> Do not commit your work to this repository
+# Tasks [Improved]
 
 ## Task #1: Pick an existing todo app
 
-Pick an existing todo app that you like and provide a brief explanation of why you like it. You can choose any todo app that you like, it can be a native app or web app.
+I pick Google Tasks,
+
+I love google tasks simplicity and does the jobs done, without unnecessary gimmick like AI, no offense for AI but who use AI for notes app ?
+
+![patrick using ai on todos apps](/public/images/readme/patrick-ai.jpeg)
+
+Also it connect with my google account that conencted to all my devices already
 
 ## Task #2: Classify the features of the todo app
 
 Classify the features of the todo app you picked into the following categories:
 
 - [ ] Must-have
+  - [ ] Adding new task, At this point if task can't add new task can it even be called as todos apps?
+  - [ ] Completing the task, Better mark than deleting the task in case future You want to feel good about completing task
+  - [ ] Deleting the task, Who wants have cluttered todos apps?
 - [ ] Nice-to-have
+  - [ ] Reminder, Not all task need reminder but its great to be reminded that's why assistant or secretary have a job right?
+  - [ ] Multiple list (different task list), perhaps multiple people using same apps or diffrent goals in each list like personal or work
 - [ ] Unnecessary
-
-Provide a brief explanation of why you classified the features into the respective categories.
+  - [ ] Integration with google ecosystem, do you hate your life ? (clarificaiton: to integrate random apps to google ecosystem)
 
 ## Task #3: Improve upon the todo app
 
