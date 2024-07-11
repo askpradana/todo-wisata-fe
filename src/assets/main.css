@@ -102,6 +102,18 @@ body {
   box-shadow: 4px 4px 0 #000;
 }
 
+.neobrut-link {
+  color: #ff6b6b;
+  text-decoration: underline;
+  cursor: pointer;
+  font-weight: bold;
+  transition: color 0.3s;
+}
+
+.neobrut-link:hover {
+  color: #ff4757;
+}
+
 .neobrut-input {
   width: 100%;
   padding: 0.5rem;
@@ -113,10 +125,63 @@ body {
     box-shadow 0.1s;
 }
 
+.neobrut-message {
+  padding: 10px;
+  margin-bottom: 20px;
+  border: 3px solid #000;
+  font-weight: bold;
+}
+
+.neobrut-success {
+  background-color: #4caf50;
+  color: white;
+}
+
+.neobrut-error {
+  background-color: #ff4757;
+  color: white;
+}
+
 .neobrut-input:focus {
   outline: none;
   transform: translate(-4px, -4px);
   box-shadow: 4px 4px 0 #000;
+}
+
+.password-input-wrapper {
+  position: relative;
+}
+
+.password-toggle-btn {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  transition: background-color 0.2s;
+}
+
+.password-toggle-btn:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.password-toggle-btn:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.3);
+}
+
+.neobrut-input {
+  padding-right: 40px; /* Make room for the toggle button */
 }
 
 /* Responsive adjustments */

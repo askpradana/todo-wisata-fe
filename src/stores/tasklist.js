@@ -64,6 +64,34 @@ export const useTodoStore = defineStore('todo', {
       } finally {
         this.isLoading = false
       }
+    },
+    async updateTodo(updatedTodo) {
+      this.isLoading = true
+      try {
+        const response = await axios.patch(
+          `${import.meta.env.VITE_API_URL}/todos/${updatedTodo.id}`,
+          updatedTodo
+        )
+        const index = this.todos.findIndex((t) => t.id === updatedTodo.id)
+        if (index !== -1) {
+          this.todos[index] = response.data
+        }
+      } catch (error) {
+        this.error = error.response?.data?.message || 'Failed to update todo'
+      } finally {
+        this.isLoading = false
+      }
+    },
+    async deleteTodo(id) {
+      this.isLoading = true
+      try {
+        await axios.delete(`${import.meta.env.VITE_API_URL}/todos/${id}`)
+        this.todos = this.todos.filter((todo) => todo.id !== id)
+      } catch (error) {
+        this.error = error.response?.data?.message || 'Failed to delete todo'
+      } finally {
+        this.isLoading = false
+      }
     }
   },
   getters: {

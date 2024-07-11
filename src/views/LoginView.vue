@@ -3,6 +3,12 @@
     <div class="neobrut-main">
       <section class="login-form neobrut-box">
         <h2 class="form-title">Log In</h2>
+        <div v-if="successMessage" class="neobrut-message neobrut-success">
+          {{ successMessage }}
+        </div>
+        <div v-if="errorMessage" class="neobrut-message neobrut-error">
+          {{ errorMessage }}
+        </div>
         <form @submit.prevent="handleLogin">
           <div class="form-group">
             <label for="email">Email</label>
@@ -10,19 +16,23 @@
           </div>
           <div class="form-group">
             <label for="password">Password</label>
-            <input
-              type="password"
-              id="password"
-              v-model="password"
-              required
-              class="neobrut-input"
-            />
+            <div class="password-input-wrapper">
+              <input
+                :type="showPassword ? 'text' : 'password'"
+                id="password"
+                v-model="password"
+                required
+                class="neobrut-input"
+              />
+              <button type="button" class="password-toggle-btn" @click="togglePasswordVisibility">
+                {{ showPassword ? '👁️' : '👁️‍🗨️' }}
+              </button>
+            </div>
           </div>
           <button type="submit" class="neobrut-btn neobrut-btn-primary" :disabled="isLoading">
             {{ isLoading ? 'Logging in...' : 'Log In' }}
           </button>
         </form>
-        <p v-if="error" class="error-message">{{ error }}</p>
         <p class="switch-form">
           Don't have an account? <a @click="goToRegister" class="neobrut-link">Register</a>
         </p>
@@ -35,7 +45,6 @@
 import { defineComponent, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
-import { storeToRefs } from 'pinia'
 
 export default defineComponent({
   name: 'LoginPage',
@@ -44,14 +53,25 @@ export default defineComponent({
     const router = useRouter()
     const email = ref('')
     const password = ref('')
-
-    // Use storeToRefs to create refs from the store state
-    const { isLoading, error } = storeToRefs(authStore)
+    const successMessage = ref('')
+    const errorMessage = ref('')
+    const showPassword = ref(false)
 
     const handleLogin = async () => {
-      const success = await authStore.login(email.value, password.value)
-      if (success) {
-        router.push('/home')
+      errorMessage.value = ''
+      successMessage.value = ''
+      try {
+        const success = await authStore.login(email.value, password.value)
+        if (success) {
+          successMessage.value = 'Login successful! Redirecting...'
+          setTimeout(() => {
+            router.push('/home')
+          }, 1500)
+        } else {
+          errorMessage.value = 'Login failed. Please check your credentials.'
+        }
+      } catch (error) {
+        errorMessage.value = error.response?.data?.message || 'An error occurred during login'
       }
     }
 
@@ -59,36 +79,26 @@ export default defineComponent({
       router.push('/register')
     }
 
+    const togglePasswordVisibility = () => {
+      showPassword.value = !showPassword.value
+    }
+
     return {
       email,
       password,
       handleLogin,
       goToRegister,
-      isLoading,
-      error
+      isLoading: authStore.isLoading,
+      successMessage,
+      errorMessage,
+      showPassword,
+      togglePasswordVisibility
     }
   }
 })
 </script>
 
 <style scoped>
-.neobrut-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  background-color: #f0f0f0;
-  margin: 0;
-  padding: 0;
-}
-
-.neobrut-main {
-  width: 100%;
-  max-width: 500px;
-  padding: 20px;
-  box-sizing: border-box;
-}
-
 .login-form {
   padding: 2rem;
   border: 6px solid #000;
@@ -134,46 +144,10 @@ label {
   box-shadow: 4px 4px 0 #000;
 }
 
-.neobrut-btn {
-  width: 100%;
-  padding: 0.8rem;
-  font-size: 1.2rem;
-  margin-top: 1rem;
-  background-color: #ff6b6b;
-  border: 4px solid #000;
-  box-shadow: 6px 6px 0 #000;
-  transition:
-    transform 0.1s,
-    box-shadow 0.1s;
-  cursor: pointer;
-}
-
-.neobrut-btn:hover {
-  transform: translate(-4px, -4px);
-  box-shadow: 10px 10px 0 #000;
-}
-
-.neobrut-btn:active {
-  transform: translate(2px, 2px);
-  box-shadow: 4px 4px 0 #000;
-}
-
 .switch-form {
   margin-top: 1.5rem;
   font-size: 0.9rem;
   text-align: center;
-}
-
-.neobrut-link {
-  color: #ff6b6b;
-  text-decoration: underline;
-  cursor: pointer;
-  font-weight: bold;
-  transition: color 0.3s;
-}
-
-.neobrut-link:hover {
-  color: #ff4757;
 }
 
 .error-message {

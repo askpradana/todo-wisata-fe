@@ -3,6 +3,12 @@
     <div class="neobrut-main">
       <section class="register-form neobrut-box">
         <h2 class="form-title">Register</h2>
+        <div v-if="successMessage" class="neobrut-message neobrut-success">
+          {{ successMessage }}
+        </div>
+        <div v-if="errorMessage" class="neobrut-message neobrut-error">
+          {{ errorMessage }}
+        </div>
         <form @submit.prevent="handleRegister">
           <div class="form-group">
             <label for="username">Username</label>
@@ -14,15 +20,45 @@
           </div>
           <div class="form-group">
             <label for="password">Password</label>
-            <input
-              type="password"
-              id="password"
-              v-model="password"
-              required
-              class="neobrut-input"
-            />
+            <div class="password-input-wrapper">
+              <input
+                :type="showPassword ? 'text' : 'password'"
+                id="password"
+                v-model="password"
+                required
+                class="neobrut-input"
+              />
+              <button
+                type="button"
+                class="password-toggle-btn"
+                @click="togglePasswordVisibility('password')"
+              >
+                {{ showPassword ? '👁️' : '👁️‍🗨️' }}
+              </button>
+            </div>
           </div>
-          <button type="submit" class="neobrut-btn neobrut-btn-secondary">Register</button>
+          <div class="form-group">
+            <label for="confirmPassword">Confirm Password</label>
+            <div class="password-input-wrapper">
+              <input
+                :type="showConfirmPassword ? 'text' : 'password'"
+                id="confirmPassword"
+                v-model="confirmPassword"
+                required
+                class="neobrut-input"
+              />
+              <button
+                type="button"
+                class="password-toggle-btn"
+                @click="togglePasswordVisibility('confirm')"
+              >
+                {{ showConfirmPassword ? '👁️' : '👁️‍🗨️' }}
+              </button>
+            </div>
+          </div>
+          <button type="submit" class="neobrut-btn neobrut-btn-primary" :disabled="isLoading">
+            {{ isLoading ? 'Registering...' : 'Register' }}
+          </button>
         </form>
         <p class="switch-form">
           Already have an account? <a @click="goToLogin" class="neobrut-link">Log In</a>
@@ -45,13 +81,44 @@ export default defineComponent({
     const username = ref('')
     const email = ref('')
     const password = ref('')
+    const confirmPassword = ref('')
     const successMessage = ref('')
+    const errorMessage = ref('')
+    const showPassword = ref(false)
+    const showConfirmPassword = ref(false)
 
     const handleRegister = async () => {
-      const result = await authStore.register(username.value, email.value, password.value)
-      if (result) {
-        successMessage.value = 'Registration successful! Redirecting to login...'
-        setTimeout(() => router.push('/login'), 2000)
+      errorMessage.value = ''
+      successMessage.value = ''
+      if (password.value !== confirmPassword.value) {
+        errorMessage.value = 'Passwords do not match'
+        return
+      }
+      try {
+        const result = await authStore.register(username.value, email.value, password.value)
+        if (result) {
+          successMessage.value = 'Registration successful! Redirecting to login...'
+          setTimeout(() => {
+            router.push('/login')
+          }, 2000)
+        } else {
+          errorMessage.value = 'Registration failed. Please try again.'
+        }
+      } catch (error) {
+        errorMessage.value =
+          error.response?.data?.message || 'An error occurred during registration'
+      }
+    }
+
+    const goToLogin = () => {
+      router.push('/login')
+    }
+
+    const togglePasswordVisibility = (field) => {
+      if (field === 'password') {
+        showPassword.value = !showPassword.value
+      } else if (field === 'confirm') {
+        showConfirmPassword.value = !showConfirmPassword.value
       }
     }
 
@@ -59,33 +126,21 @@ export default defineComponent({
       username,
       email,
       password,
+      confirmPassword,
       handleRegister,
+      goToLogin,
       isLoading: authStore.isLoading,
-      error: authStore.error,
-      successMessage
+      successMessage,
+      errorMessage,
+      showPassword,
+      showConfirmPassword,
+      togglePasswordVisibility
     }
   }
 })
 </script>
 
 <style scoped>
-.neobrut-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  background-color: #f0f0f0;
-  margin: 0;
-  padding: 0;
-}
-
-.neobrut-main {
-  width: 100%;
-  max-width: 500px;
-  padding: 20px;
-  box-sizing: border-box;
-}
-
 .register-form {
   padding: 2rem;
   border: 6px solid #000;
@@ -131,45 +186,9 @@ label {
   box-shadow: 4px 4px 0 #000;
 }
 
-.neobrut-btn {
-  width: 100%;
-  padding: 0.8rem;
-  font-size: 1.2rem;
-  margin-top: 1rem;
-  background-color: #ffe66d;
-  border: 4px solid #000;
-  box-shadow: 6px 6px 0 #000;
-  transition:
-    transform 0.1s,
-    box-shadow 0.1s;
-  cursor: pointer;
-}
-
-.neobrut-btn:hover {
-  transform: translate(-4px, -4px);
-  box-shadow: 10px 10px 0 #000;
-}
-
-.neobrut-btn:active {
-  transform: translate(2px, 2px);
-  box-shadow: 4px 4px 0 #000;
-}
-
 .switch-form {
   margin-top: 1.5rem;
   font-size: 0.9rem;
   text-align: center;
-}
-
-.neobrut-link {
-  color: #ff6b6b;
-  text-decoration: underline;
-  cursor: pointer;
-  font-weight: bold;
-  transition: color 0.3s;
-}
-
-.neobrut-link:hover {
-  color: #ff4757;
 }
 </style>

@@ -7,31 +7,44 @@
     <div v-if="isLoading" class="neobrut-loading">Loading...</div>
     <div v-else-if="error" class="neobrut-error">{{ error }}</div>
     <div v-else>
-      <h2 class="neobrut-subtitle">Your Todos</h2>
-      <TransitionGroup name="todo-list" tag="div" class="neobrut-todo-list">
-        <div
-          v-for="todo in sortedTodos"
-          :key="todo.id"
-          class="neobrut-todo-item"
-          :style="{ borderColor: todo.colorHex }"
-        >
-          <input
-            type="checkbox"
-            :checked="todo.completed"
-            @change="toggleTodoCompletion(todo.id)"
-            class="neobrut-checkbox"
+      <div class="neobrut-todo-header">
+        <h2 class="neobrut-subtitle">Your Todos</h2>
+        <button @click="toggleHideCompleted" class="neobrut-button neobrut-toggle-button">
+          {{ hideCompleted ? 'Show Completed' : 'Hide Completed' }}
+        </button>
+      </div>
+      <div v-if="filteredTodos.length > 0" class="neobrut-todo-list">
+        <div v-for="todo in filteredTodos" :key="todo.id" class="neobrut-todo-item-wrapper">
+          <EditTodoItem
+            v-if="editingTodo === todo.id"
+            :todo="todo"
+            @save="saveTodo"
+            @cancel="cancelEdit"
           />
-          <div class="neobrut-todo-content">
-            <span :class="{ completed: todo.completed }" class="neobrut-todo-title">{{
-              todo.title
-            }}</span>
-            <span class="neobrut-todo-description">{{ todo.description }}</span>
-            <span v-if="todo.reminder" class="neobrut-todo-reminder">
-              Reminder: {{ new Date(todo.reminder).toLocaleString() }}
-            </span>
+          <div v-else class="neobrut-todo-item" :class="[`neobrut-todo-color-${todo.color}`]">
+            <input
+              type="checkbox"
+              :checked="todo.completed"
+              @change="toggleTodoCompletion(todo.id)"
+              class="neobrut-checkbox"
+            />
+            <div class="neobrut-todo-content" @click="startEditing(todo.id)">
+              <span :class="{ completed: todo.completed }" class="neobrut-todo-title">
+                {{ todo.title }}
+              </span>
+              <span class="neobrut-todo-description">{{ todo.description }}</span>
+              <span v-if="todo.reminder" class="neobrut-todo-reminder">
+                Reminder: {{ new Date(todo.reminder).toLocaleString() }}
+              </span>
+            </div>
+            <button @click="deleteTodo(todo.id)" class="neobrut-delete-btn">🗑️</button>
           </div>
         </div>
-      </TransitionGroup>
+      </div>
+      <div v-else class="neobrut-empty-list">
+        <p>{{ emptyListMessage }}</p>
+        <span class="neobrut-empty-icon">📝</span>
+      </div>
     </div>
     <button @click="openAddTodoDialog" class="neobrut-fab">+</button>
     <AddTodoDialog
@@ -49,11 +62,13 @@ import { useTodoStore } from '@/stores/tasklist'
 import { useAuthStore } from '@/stores/auth'
 import { storeToRefs } from 'pinia'
 import AddTodoDialog from '@/components/CreateNewTask.vue'
+import EditTodoItem from '@/components/UpdateTask.vue'
 
 export default defineComponent({
   name: 'LoggedinHomeView',
   components: {
-    AddTodoDialog
+    AddTodoDialog,
+    EditTodoItem
   },
   setup() {
     const todoStore = useTodoStore()
@@ -61,12 +76,25 @@ export default defineComponent({
     const router = useRouter()
     const { todos, username, isLoading, error } = storeToRefs(todoStore)
     const isAddTodoDialogOpen = ref(false)
+    const editingTodo = ref(null)
+    const hideCompleted = ref(true)
 
-    const sortedTodos = computed(() => {
-      return [...todos.value].sort((a, b) => {
+    const filteredTodos = computed(() => {
+      let filtered = [...todos.value]
+      if (hideCompleted.value) {
+        filtered = filtered.filter((todo) => !todo.completed)
+      }
+      return filtered.sort((a, b) => {
         if (a.completed === b.completed) return 0
         return a.completed ? 1 : -1
       })
+    })
+
+    const emptyListMessage = computed(() => {
+      if (hideCompleted.value && todos.value.some((todo) => todo.completed)) {
+        return "All visible tasks are completed. Uncheck 'Hide Completed' to view them."
+      }
+      return "Your todo list is empty. Click the '+' button to add a new task!"
     })
 
     onMounted(() => {
@@ -81,9 +109,9 @@ export default defineComponent({
       await todoStore.toggleTodoCompletion(id)
     }
 
-    const handleLogout = () => {
-      authStore.logout()
-      router.push('/')
+    const handleLogout = async () => {
+      await authStore.logout()
+      router.push({ path: '/' })
     }
 
     const openAddTodoDialog = () => {
@@ -94,8 +122,31 @@ export default defineComponent({
       isAddTodoDialogOpen.value = false
     }
 
+    const startEditing = (id) => {
+      editingTodo.value = id
+    }
+
+    const saveTodo = async (updatedTodo) => {
+      await todoStore.updateTodo(updatedTodo)
+      editingTodo.value = null
+    }
+
+    const cancelEdit = () => {
+      editingTodo.value = null
+    }
+
+    const deleteTodo = async (id) => {
+      if (confirm('Are you sure you want to delete this todo?')) {
+        await todoStore.deleteTodo(id)
+      }
+    }
+
+    const toggleHideCompleted = () => {
+      hideCompleted.value = !hideCompleted.value
+    }
+
     return {
-      sortedTodos,
+      filteredTodos,
       username,
       isLoading,
       error,
@@ -104,28 +155,26 @@ export default defineComponent({
       handleLogout,
       isAddTodoDialogOpen,
       openAddTodoDialog,
-      closeAddTodoDialog
+      closeAddTodoDialog,
+      editingTodo,
+      startEditing,
+      saveTodo,
+      cancelEdit,
+      deleteTodo,
+      hideCompleted,
+      toggleHideCompleted,
+      emptyListMessage
     }
   }
 })
 </script>
 
-<style scoped>
-.neobrut-container {
-  max-width: 800px;
-  margin: 3rem auto;
-  padding: 20px;
-  background-color: #f0f0f0;
-  border: 4px solid #000;
-  box-shadow: 8px 8px 0 #000;
-}
-
+<style>
 .neobrut-title {
   font-size: 2.5rem;
   color: #000;
   text-transform: uppercase;
-  margin-bottom: 20px;
-  text-shadow: 3px 3px 0 #ff6b6b;
+  margin: 0;
 }
 
 .neobrut-subtitle {
@@ -136,6 +185,29 @@ export default defineComponent({
   text-transform: uppercase;
   border-bottom: 4px solid #000;
   display: inline-block;
+}
+
+.neobrut-button {
+  padding: 10px 20px;
+  font-size: 1rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  border: 3px solid #000;
+  background-color: #fff;
+  cursor: pointer;
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s;
+}
+
+.neobrut-button:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 4px 4px 0 #000;
+}
+
+.neobrut-logout-button {
+  background-color: #ff4757;
+  color: #fff;
 }
 
 .neobrut-todo-list {
@@ -183,6 +255,7 @@ export default defineComponent({
 
 .neobrut-todo-content {
   flex-grow: 1;
+  cursor: pointer;
 }
 
 .neobrut-todo-title {
@@ -210,89 +283,17 @@ export default defineComponent({
   display: block;
 }
 
-.neobrut-form {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-  margin-top: 20px;
-  background-color: #fff;
-  padding: 20px;
-  border: 3px solid #000;
-  box-shadow: 5px 5px 0 #000;
-}
-
-.neobrut-input,
-.neobrut-select {
-  padding: 10px;
-  font-size: 1rem;
-  border: 2px solid #000;
-  background-color: #fff;
-}
-
-.neobrut-input:focus,
-.neobrut-select:focus {
-  outline: none;
-  box-shadow: 3px 3px 0 #ff6b6b;
-}
-
-.neobrut-button {
-  align-self: flex-start;
-  padding: 10px 20px;
-  font-size: 1rem;
-  background-color: #ff6b6b;
-  color: #000;
-  border: 2px solid #000;
-  cursor: pointer;
-  text-transform: uppercase;
-  font-weight: bold;
-  transition:
-    transform 0.2s,
-    box-shadow 0.2s;
-}
-
-.neobrut-button:hover {
-  transform: translate(-2px, -2px);
-  box-shadow: 4px 4px 0 #000;
-}
-
-.neobrut-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 30px;
-}
-
-.neobrut-logout-button {
-  background-color: #ff4757;
-  color: #fff;
-  border: 3px solid #000;
-  padding: 10px 20px;
-  font-size: 1rem;
-  font-weight: bold;
-  text-transform: uppercase;
-  cursor: pointer;
-  transition:
-    transform 0.2s,
-    box-shadow 0.2s;
-}
-
-.neobrut-logout-button:hover {
-  transform: translate(-2px, -2px);
-  box-shadow: 4px 4px 0 #000;
-}
-
-.neobrut-loading,
-.neobrut-error {
+.neobrut-delete-btn {
+  background: none;
+  border: none;
   font-size: 1.2rem;
-  padding: 20px;
-  background-color: #fff;
-  border: 3px solid #000;
-  box-shadow: 5px 5px 0 #000;
-  margin-top: 20px;
+  cursor: pointer;
+  padding: 5px;
+  transition: transform 0.2s;
 }
 
-.neobrut-error {
-  color: #ff0000;
+.neobrut-delete-btn:hover {
+  transform: scale(1.2);
 }
 
 .neobrut-fab {
@@ -321,6 +322,37 @@ export default defineComponent({
   box-shadow: 7px 7px 0 #000;
 }
 
+.neobrut-empty-list {
+  text-align: center;
+  padding: 40px;
+  background-color: #f0f0f0;
+  border: 3px solid #000;
+  box-shadow: 5px 5px 0 #000;
+  margin-top: 20px;
+}
+
+.neobrut-empty-icon {
+  font-size: 48px;
+  display: block;
+  margin-top: 20px;
+}
+
+.neobrut-todo-color-red {
+  border-color: #ff0000;
+}
+.neobrut-todo-color-purple {
+  border-color: #800080;
+}
+.neobrut-todo-color-blue {
+  border-color: #0000ff;
+}
+.neobrut-todo-color-green {
+  border-color: #008000;
+}
+.neobrut-todo-color-yellow {
+  border-color: #ffff00;
+}
+
 .todo-list-move,
 .todo-list-enter-active,
 .todo-list-leave-active {
@@ -335,5 +367,18 @@ export default defineComponent({
 
 .todo-list-leave-active {
   position: absolute;
+}
+
+.neobrut-todo-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.neobrut-toggle-button {
+  font-size: 0.9rem;
+  padding: 8px 16px;
+  background-color: #f0f0f0;
 }
 </style>
