@@ -14,12 +14,12 @@ Also it connect with my google account that conencted to all my devices already
 
 Classify the features of the todo app you picked into the following categories:
 
-- [ ] Must-have
-  - [ ] Adding new task, At this point if task can't add new task can it even be called as todos apps?
-  - [ ] Completing the task, Better mark than deleting the task in case future You want to feel good about completing task
-  - [ ] Deleting the task, Who wants have cluttered todos apps?
-- [ ] Nice-to-have
-  - [ ] Reminder, Not all task need reminder but its great to be reminded that's why assistant or secretary have a job right?
+- [x] Must-have
+  - [x] Adding new task, At this point if task can't add new task can it even be called as todos apps?
+  - [x] Completing the task, Better mark than deleting the task in case future You want to feel good about completing task
+  - [x] Deleting the task, Who wants have cluttered todos apps?
+- [-] Nice-to-have
+  - [x] Reminder, Not all task need reminder but its great to be reminded that's why assistant or secretary have a job right?
   - [ ] Multiple list (different task list), perhaps multiple people using same apps or diffrent goals in each list like personal or work
   - [ ] Offline mode
 - [ ] Unnecessary
