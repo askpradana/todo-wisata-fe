@@ -2,7 +2,10 @@
   <div class="neobrut-container">
     <div class="neobrut-header">
       <h1 class="neobrut-title">Welcome, {{ username }}!</h1>
-      <button @click="handleLogout" class="neobrut-button neobrut-logout-button">Logout</button>
+      <div class="between">
+        <button @click="goToMyDay" class="neobrut-button neobrut-myday-button">My Day</button>
+        <button @click="handleLogout" class="neobrut-button neobrut-logout-button">Logout</button>
+      </div>
     </div>
     <div v-if="isLoading" class="neobrut-loading">Loading...</div>
     <div v-else-if="error" class="neobrut-error">{{ error }}</div>
@@ -145,6 +148,10 @@ export default defineComponent({
       hideCompleted.value = !hideCompleted.value
     }
 
+    const goToMyDay = () => {
+      router.push('/myday')
+    }
+
     return {
       filteredTodos,
       username,
@@ -163,13 +170,19 @@ export default defineComponent({
       deleteTodo,
       hideCompleted,
       toggleHideCompleted,
-      emptyListMessage
+      emptyListMessage,
+      goToMyDay
     }
   }
 })
 </script>
 
 <style>
+.between {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
 .neobrut-title {
   font-size: 2.5rem;
   color: #000;

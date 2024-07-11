@@ -3,6 +3,7 @@ import HomeView from '../views/HomeView.vue'
 import Login from '../views/LoginView.vue'
 import Register from '../views/RegisterView.vue'
 import LoggedinHomeViewVue from '@/views/loggedin/LoggedinHomeView.vue'
+import MyDay from '@/components/MyDay.vue'
 import { useAuthStore } from '../stores/auth'
 
 const routes = [
@@ -25,6 +26,12 @@ const routes = [
     path: '/home',
     name: 'LoggedinHome',
     component: LoggedinHomeViewVue,
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/myday',
+    name: 'MyDay',
+    component: MyDay,
     meta: { requiresAuth: true }
   }
 ]
