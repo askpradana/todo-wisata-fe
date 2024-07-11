@@ -1,35 +1,139 @@
-@import './base.css';
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
 
-#app {
-  max-width: 1280px;
+body {
+  font-family: 'Courier New', monospace;
+  background-color: #f0f0f0;
+  color: #000;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Layout */
+.neobrut-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  padding: 1rem;
+}
+
+.neobrut-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  max-width: 100%;
+  width: 100%;
   margin: 0 auto;
-  padding: 2rem;
-  font-weight: normal;
 }
 
-a,
-.green {
-  text-decoration: none;
-  color: hsla(160, 100%, 37%, 1);
-  transition: 0.4s;
-  padding: 3px;
+/* Header */
+.neobrut-header {
+  background-color: #ff6b6b;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border: 4px solid #000;
+  box-shadow: 8px 8px 0 #000;
+  animation: slideDown 0.5s ease-out;
 }
 
-@media (hover: hover) {
-  a:hover {
-    background-color: hsla(160, 100%, 37%, 0.2);
+.app-name {
+  font-size: 2.5rem;
+  color: #000;
+  margin: 0;
+  text-transform: uppercase;
+}
+
+/* Footer */
+.neobrut-footer {
+  margin-top: auto;
+  padding: 1rem;
+  background-color: #ff6b6b;
+  border: 4px solid #000;
+  box-shadow: 8px 8px 0 #000;
+}
+
+/* Neobrutalist elements */
+.neobrut-box {
+  background-color: #fff;
+  border: 4px solid #000;
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+  box-shadow: 8px 8px 0 #000;
+  animation: popIn 0.5s ease-out;
+}
+
+.neobrut-btn {
+  padding: 0.8rem 1.5rem;
+  font-size: 1rem;
+  border: 3px solid #000;
+  cursor: pointer;
+  font-weight: bold;
+  text-transform: uppercase;
+  transition:
+    transform 0.1s,
+    box-shadow 0.1s;
+}
+
+.neobrut-btn:hover {
+  transform: translate(-4px, -4px);
+  box-shadow: 8px 8px 0 #000;
+}
+
+.neobrut-btn:active {
+  transform: translate(4px, 4px);
+  box-shadow: none;
+}
+
+.neobrut-btn-primary {
+  background-color: #ff6b6b;
+  color: #000;
+  box-shadow: 4px 4px 0 #000;
+}
+
+.neobrut-btn-secondary {
+  background-color: #ffe66d;
+  color: #000;
+  box-shadow: 4px 4px 0 #000;
+}
+
+.neobrut-input {
+  width: 100%;
+  padding: 0.5rem;
+  font-size: 1rem;
+  border: 3px solid #000;
+  background-color: #fff;
+  transition:
+    transform 0.1s,
+    box-shadow 0.1s;
+}
+
+.neobrut-input:focus {
+  outline: none;
+  transform: translate(-4px, -4px);
+  box-shadow: 4px 4px 0 #000;
+}
+
+/* Responsive adjustments */
+@media (min-width: 768px) {
+  .neobrut-container {
+    padding: 2rem;
   }
-}
 
-@media (min-width: 1024px) {
-  body {
-    display: flex;
-    place-items: center;
+  .neobrut-main {
+    max-width: 800px;
   }
 
-  #app {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    padding: 0 2rem;
+  .neobrut-header {
+    margin-bottom: 2rem;
+  }
+
+  .app-name {
+    font-size: 3rem;
   }
 }

@@ -21,6 +21,7 @@ Classify the features of the todo app you picked into the following categories:
 - [ ] Nice-to-have
   - [ ] Reminder, Not all task need reminder but its great to be reminded that's why assistant or secretary have a job right?
   - [ ] Multiple list (different task list), perhaps multiple people using same apps or diffrent goals in each list like personal or work
+  - [ ] Offline mode
 - [ ] Unnecessary
   - [ ] Integration with google ecosystem, do you hate your life ? (clarificaiton: to integrate random apps to google ecosystem)
 
