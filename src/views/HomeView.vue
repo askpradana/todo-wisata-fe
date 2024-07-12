@@ -1,29 +1,3 @@
-<template>
-  <div class="minimalist-container">
-    <header class="minimalist-header">
-      <div class="logo">
-        <span class="checkmark">✓</span>
-        <span class="app-name">minimalist</span>
-      </div>
-      <div class="made-by">Made with ♥ by <a href="#" class="author-link">nfldyprdn</a></div>
-    </header>
-
-    <main class="minimalist-main">
-      <h1 class="main-title">Simple, shareable todo lists.</h1>
-      <p class="subtitle">The easiest way to keep track of the stuff you want to do.</p>
-
-      <div class="main-actions">
-        <button @click="navigateToLogin" class="sign-in-button">Sign in</button>
-        <button @click="navigateToRegister" class="sign-in-button">Get started</button>
-      </div>
-
-      <div class="app-preview">
-        <img src="@/assets/app-preview.png" alt="App Preview" class="preview-image" />
-      </div>
-    </main>
-  </div>
-</template>
-
 <script setup>
 import { useRouter } from 'vue-router'
 
@@ -38,99 +12,46 @@ const navigateToRegister = () => {
 }
 </script>
 
-<style scoped>
-.minimalist-container {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 2rem;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell,
-    'Open Sans', 'Helvetica Neue', sans-serif;
-}
+<template>
+  <div class="max-w-3xl mx-auto px-8 font-sans mt-12">
+    <header class="flex justify-between items-center mb-16">
+      <div class="flex items-center">
+        <span class="bg-blue-500 text-white py-1 px-2 rounded font-bold mr-2">✓</span>
+        <span class="font-medium text-xl">minimalist</span>
+      </div>
+      <div class="text-sm text-gray-600">
+        Made with ♥ by <a href="#" class="text-blue-500 no-underline">nfldyprdn</a>
+      </div>
+    </header>
 
-.minimalist-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 4rem;
-}
+    <main class="flex flex-col items-center text-center">
+      <h1 class="text-5xl font-bold mb-4">Simple, shareable todo lists.</h1>
+      <p class="text-xl text-gray-600 mb-8">
+        The easiest way to keep track of the stuff you want to do.
+      </p>
 
-.main-actions {
-  display: flex;
-  gap: 1rem;
-  justify-content: center;
-  margin-top: 1rem;
-}
+      <div class="flex gap-4 justify-center mt-4">
+        <button
+          @click="navigateToLogin"
+          class="bg-blue-500 text-white border-none py-3 px-8 text-base rounded hover:bg-blue-600 transition-colors duration-300"
+        >
+          Sign in
+        </button>
+        <button
+          @click="navigateToRegister"
+          class="bg-blue-500 text-white border-none py-3 px-8 text-base rounded hover:bg-blue-600 transition-colors duration-300"
+        >
+          Get started
+        </button>
+      </div>
 
-.logo {
-  display: flex;
-  align-items: center;
-}
-
-.checkmark {
-  background-color: #4285f4;
-  color: white;
-  padding: 0.2rem 0.4rem;
-  border-radius: 4px;
-  font-weight: bold;
-  margin-right: 0.5rem;
-}
-
-.app-name {
-  font-weight: 500;
-  font-size: 1.2rem;
-}
-
-.made-by {
-  font-size: 0.9rem;
-  color: #666;
-}
-
-.author-link {
-  color: #4285f4;
-  text-decoration: none;
-}
-
-.minimalist-main {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-}
-
-.main-title {
-  font-size: 3rem;
-  font-weight: 700;
-  margin-bottom: 1rem;
-}
-
-.subtitle {
-  font-size: 1.2rem;
-  color: #666;
-  margin-bottom: 2rem;
-}
-
-.sign-in-button {
-  background-color: #4285f4;
-  color: white;
-  border: none;
-  padding: 0.8rem 2rem;
-  font-size: 1rem;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.sign-in-button:hover {
-  background-color: #3367d6;
-}
-
-.app-preview {
-  margin-top: 4rem;
-}
-
-.preview-image {
-  max-width: 100%;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  border-radius: 8px;
-}
-</style>
+      <div class="mt-16">
+        <img
+          src="@/assets/app-preview.png"
+          alt="App Preview"
+          class="max-w-full shadow-md rounded-lg"
+        />
+      </div>
+    </main>
+  </div>
+</template>

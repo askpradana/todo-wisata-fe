@@ -1,48 +1,3 @@
-<template>
-  <div class="minimalist-container">
-    <div class="minimalist-form-container">
-      <h1 class="minimalist-title">Register</h1>
-      <form @submit.prevent="handleRegister" class="minimalist-form">
-        <div class="minimalist-form-group">
-          <label for="username">Username</label>
-          <input type="text" id="username" v-model="username" required class="minimalist-input" />
-        </div>
-        <div class="minimalist-form-group">
-          <label for="email">Email</label>
-          <input type="email" id="email" v-model="email" required class="minimalist-input" />
-        </div>
-        <div class="minimalist-form-group">
-          <label for="password">Password</label>
-          <div class="minimalist-password-input">
-            <input
-              :type="showPassword ? 'text' : 'password'"
-              id="password"
-              v-model="password"
-              required
-              class="minimalist-input"
-            />
-            <button
-              type="button"
-              @click="togglePasswordVisibility"
-              class="minimalist-password-toggle"
-            >
-              {{ showPassword ? '👁️' : '👁️‍🗨️' }}
-            </button>
-          </div>
-        </div>
-        <button type="submit" class="minimalist-button" :disabled="isLoading">
-          {{ isLoading ? 'Registering...' : 'Register' }}
-        </button>
-      </form>
-      <p class="minimalist-message" v-if="successMessage">{{ successMessage }}</p>
-      <p class="minimalist-message error" v-if="errorMessage">{{ errorMessage }}</p>
-      <p class="minimalist-switch-form">
-        Already have an account? <a @click="goToLogin" class="minimalist-link">Log In</a>
-      </p>
-    </div>
-  </div>
-</template>
-
 <script>
 import { defineComponent, ref } from 'vue'
 import { useRouter } from 'vue-router'
@@ -103,81 +58,64 @@ export default defineComponent({
 })
 </script>
 
-<style scoped>
-.minimalist-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  background-color: #f9f9f9;
-}
-
-.minimalist-form-container {
-  background-color: #ffffff;
-  padding: 2rem;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  width: 100%;
-  max-width: 400px;
-}
-
-.minimalist-title {
-  font-size: 1.5rem;
-  margin-bottom: 1.5rem;
-  text-align: center;
-}
-
-.minimalist-form-group {
-  margin-bottom: 1rem;
-}
-
-.minimalist-password-input {
-  position: relative;
-}
-
-.minimalist-password-toggle {
-  position: absolute;
-  right: 0.5rem;
-  top: 50%;
-  transform: translateY(-50%);
-  background: none;
-  border: none;
-  cursor: pointer;
-}
-
-.minimalist-button {
-  width: 100%;
-  padding: 0.75rem;
-  font-size: 1rem;
-  background-color: #4285f4;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.minimalist-button:hover {
-  background-color: #3367d6;
-}
-
-.minimalist-message {
-  margin-top: 1rem;
-  text-align: center;
-}
-
-.minimalist-message.error {
-  color: #ff4757;
-}
-
-.minimalist-switch-form {
-  margin-top: 1rem;
-  text-align: center;
-  font-size: 0.9rem;
-}
-
-.minimalist-link {
-  color: #4285f4;
-  cursor: pointer;
-}
-</style>
+<template>
+  <div class="flex justify-center items-center min-h-screen bg-gray-100">
+    <div class="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
+      <h1 class="text-2xl mb-6 text-center font-semibold">Register</h1>
+      <form @submit.prevent="handleRegister" class="space-y-4">
+        <div>
+          <label for="username" class="block mb-1 text-sm font-medium">Username</label>
+          <input
+            type="text"
+            id="username"
+            v-model="username"
+            required
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+        <div>
+          <label for="email" class="block mb-1 text-sm font-medium">Email</label>
+          <input
+            type="email"
+            id="email"
+            v-model="email"
+            required
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+        <div>
+          <label for="password" class="block mb-1 text-sm font-medium">Password</label>
+          <div class="relative">
+            <input
+              :type="showPassword ? 'text' : 'password'"
+              id="password"
+              v-model="password"
+              required
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            <button
+              type="button"
+              @click="togglePasswordVisibility"
+              class="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500 focus:outline-none"
+            >
+              {{ showPassword ? '👁️' : '👁️‍🗨️' }}
+            </button>
+          </div>
+        </div>
+        <button
+          type="submit"
+          class="w-full py-2 px-4 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+          :disabled="isLoading"
+        >
+          {{ isLoading ? 'Registering...' : 'Register' }}
+        </button>
+      </form>
+      <p v-if="successMessage" class="mt-4 text-center text-green-600">{{ successMessage }}</p>
+      <p v-if="errorMessage" class="mt-4 text-center text-red-600">{{ errorMessage }}</p>
+      <p class="mt-4 text-center text-sm">
+        Already have an account?
+        <a @click="goToLogin" class="text-blue-500 cursor-pointer hover:underline">Log In</a>
+      </p>
+    </div>
+  </div>
+</template>
