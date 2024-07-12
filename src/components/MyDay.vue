@@ -1,38 +1,40 @@
+<!-- src/views/MyDayView.vue -->
 <template>
-  <div class="neobrut-container">
-    <div class="neobrut-header">
-      <h1 class="neobrut-title">My Day</h1>
-      <button @click="goBack" class="neobrut-button neobrut-back-button">Back</button>
-    </div>
-    <div v-if="isLoading" class="neobrut-loading">Loading your day...</div>
-    <div v-else-if="error" class="neobrut-error">{{ error }}</div>
-    <div v-else class="neobrut-myday-content">
-      <h2 class="neobrut-greeting">Hello, {{ username }}!</h2>
-      <div v-if="todayTasks.length > 0" class="neobrut-myday-tasks">
-        <div v-for="(task, index) in todayTasks" :key="task.id" class="neobrut-myday-task">
-          <p class="neobrut-myday-time">
-            {{ index === 0 ? 'Today' : 'Then' }} at {{ formatTime(task.reminder) }} you have:
-          </p>
-          <div
-            @click="toggleDescription(task.id)"
-            class="neobrut-myday-title"
-            :class="{ 'neobrut-myday-completed': task.completed }"
-          >
-            {{ task.title }}
-          </div>
-          <div
-            v-if="task.description && expandedTasks.includes(task.id)"
-            class="neobrut-myday-description"
-          >
-            {{ task.description }}
+  <div class="minimalist-container">
+    <header class="minimalist-header">
+      <h1 class="minimalist-title">My Day</h1>
+      <button @click="goBack" class="minimalist-button">Back</button>
+    </header>
+    <main class="minimalist-main">
+      <div v-if="isLoading" class="minimalist-loading">Loading your day...</div>
+      <div v-else-if="error" class="minimalist-error">{{ error }}</div>
+      <div v-else>
+        <h2 class="minimalist-greeting">Hello, {{ username }}!</h2>
+        <div v-if="todayTasks.length > 0" class="minimalist-tasks">
+          <div v-for="(task, index) in todayTasks" :key="task.id" class="minimalist-task">
+            <p class="minimalist-task-time">
+              {{ index === 0 ? 'Today' : 'Then' }} at {{ formatTime(task.reminder) }}:
+            </p>
+            <div
+              @click="toggleDescription(task.id)"
+              class="minimalist-task-content"
+              :class="{ 'minimalist-task-completed': task.completed }"
+            >
+              <h3 class="minimalist-task-title">{{ task.title }}</h3>
+              <p
+                v-if="task.description && expandedTasks.includes(task.id)"
+                class="minimalist-task-description"
+              >
+                {{ task.description }}
+              </p>
+            </div>
           </div>
         </div>
+        <div v-else class="minimalist-empty-day">
+          <p>You have no tasks scheduled for today. Enjoy your free time!</p>
+        </div>
       </div>
-      <div v-else class="neobrut-myday-empty">
-        <p>You have no tasks scheduled for today. Enjoy your free time!</p>
-        <span class="neobrut-empty-icon">🌴</span>
-      </div>
-    </div>
+    </main>
   </div>
 </template>
 
@@ -98,71 +100,72 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.neobrut-myday-content {
-  max-width: 600px;
+.minimalist-container {
+  max-width: 800px;
   margin: 0 auto;
+  padding: 2rem;
 }
 
-.neobrut-greeting {
-  font-size: 2rem;
+.minimalist-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 2rem;
-  text-align: center;
 }
 
-.neobrut-myday-tasks {
+.minimalist-title {
+  font-size: 1.5rem;
+  font-weight: 500;
+}
+
+.minimalist-greeting {
+  font-size: 1.2rem;
+  margin-bottom: 1.5rem;
+}
+
+.minimalist-tasks {
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: 1rem;
 }
 
-.neobrut-myday-task {
+.minimalist-task {
   background-color: #fff;
-  border: 3px solid #000;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
   padding: 1rem;
-  box-shadow: 5px 5px 0 #000;
 }
 
-.neobrut-myday-time {
-  font-size: 1.2rem;
+.minimalist-task-time {
+  font-size: 0.9rem;
+  color: #666;
   margin-bottom: 0.5rem;
 }
 
-.neobrut-myday-title {
-  font-size: 1.5rem;
-  font-weight: bold;
+.minimalist-task-content {
   cursor: pointer;
-  padding: 0.5rem;
-  background-color: #f0f0f0;
-  border: 2px solid #000;
-  transition: transform 0.2s;
 }
 
-.neobrut-myday-title:hover {
-  transform: translate(-2px, -2px);
-  box-shadow: 2px 2px 0 #000;
+.minimalist-task-title {
+  font-size: 1.1rem;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
 }
 
-.neobrut-myday-completed {
+.minimalist-task-completed .minimalist-task-title {
   text-decoration: line-through;
   color: #888;
 }
 
-.neobrut-myday-description {
-  margin-top: 1rem;
-  padding: 1rem;
-  background-color: #f0f0f0;
-  border: 2px solid #000;
+.minimalist-task-description {
+  font-size: 0.9rem;
+  color: #666;
 }
 
-.neobrut-myday-empty {
+.minimalist-empty-day {
   text-align: center;
   padding: 2rem;
-  background-color: #f0f0f0;
-  border: 3px solid #000;
-  box-shadow: 5px 5px 0 #000;
-}
-
-.neobrut-back-button {
-  background-color: #f0f0f0;
+  background-color: #f9f9f9;
+  border-radius: 4px;
 }
 </style>

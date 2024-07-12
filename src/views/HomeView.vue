@@ -1,102 +1,136 @@
 <template>
-  <div class="neobrut-container">
-    <header class="neobrut-header">
-      <h1 class="app-name">OneTask</h1>
+  <div class="minimalist-container">
+    <header class="minimalist-header">
+      <div class="logo">
+        <span class="checkmark">✓</span>
+        <span class="app-name">minimalist</span>
+      </div>
+      <div class="made-by">Made with ♥ by <a href="#" class="author-link">Your Name</a></div>
     </header>
-    <main class="neobrut-main">
-      <section class="hero-cta neobrut-box">
-        <h2 class="headline">Focus. Achieve. Repeat.</h2>
-        <p class="subheadline">Master your day by conquering one task at a time.</p>
-        <div class="button-group">
-          <button @click="login" class="neobrut-btn neobrut-btn-primary">Log In</button>
-          <button @click="register" class="neobrut-btn neobrut-btn-secondary">
-            Start For Free
-          </button>
-        </div>
-        <p class="no-credit-card">No credit card. Start focusing today.</p>
-      </section>
-      <section class="how-it-works neobrut-box">
-        <h3>How OneTask Works:</h3>
-        <ol>
-          <li>Add your tasks</li>
-          <li>Focus on one task</li>
-          <li>Complete it</li>
-          <li>Repeat & succeed</li>
-        </ol>
-      </section>
+
+    <main class="minimalist-main">
+      <h1 class="main-title">Simple, shareable todo lists.</h1>
+      <p class="subtitle">The easiest way to keep track of the stuff you want to do.</p>
+
+      <div class="main-actions">
+        <button @click="navigateToLogin" class="sign-in-button">Sign in</button>
+        <button @click="navigateToRegister" class="sign-in-button">Get started</button>
+      </div>
+
+      <!-- <div class="app-preview">
+        <img src="@/assets/app-preview.png" alt="App Preview" class="preview-image">
+      </div> -->
     </main>
-    <footer class="neobrut-footer">
-      <p>&copy; 2024 OneTask. Simplify your focus, amplify your success.</p>
-    </footer>
   </div>
 </template>
 
 <script setup>
 import { useRouter } from 'vue-router'
+
 const router = useRouter()
-const login = () => {
+
+const navigateToLogin = () => {
   router.push('/login')
 }
 
-const register = () => {
+const navigateToRegister = () => {
   router.push('/register')
 }
 </script>
 
 <style scoped>
-.hero-cta {
-  background-color: #4ecdc4;
+.minimalist-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell,
+    'Open Sans', 'Helvetica Neue', sans-serif;
 }
 
-.headline {
-  font-size: 2rem;
-  text-transform: uppercase;
-  margin-bottom: 1rem;
-}
-
-.subheadline {
-  font-size: 1.2rem;
-  margin-bottom: 1rem;
-}
-
-.button-group {
+.minimalist-header {
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4rem;
+}
+
+.main-actions {
+  display: flex;
   gap: 1rem;
-  margin-bottom: 1rem;
-}
-
-.how-it-works h3 {
-  font-size: 1.5rem;
-  margin-bottom: 1rem;
-}
-
-.how-it-works ol {
-  list-style-type: none;
-  padding: 0;
-  counter-reset: item;
-}
-
-.how-it-works li {
-  margin-bottom: 0.5rem;
-  padding: 0.5rem;
-  background-color: #ffe66d;
-  border: 2px solid #000;
-  counter-increment: item;
-  display: flex;
-  align-items: center;
-}
-
-.how-it-works li::before {
-  content: counter(item);
-  margin-right: 10px;
-  background-color: #000;
-  color: #fff;
-  width: 24px;
-  height: 24px;
-  display: flex;
-  align-items: center;
   justify-content: center;
+  margin-top: 1rem;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+}
+
+.checkmark {
+  background-color: #4285f4;
+  color: white;
+  padding: 0.2rem 0.4rem;
+  border-radius: 4px;
   font-weight: bold;
+  margin-right: 0.5rem;
+}
+
+.app-name {
+  font-weight: 500;
+  font-size: 1.2rem;
+}
+
+.made-by {
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.author-link {
+  color: #4285f4;
+  text-decoration: none;
+}
+
+.minimalist-main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.main-title {
+  font-size: 3rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.subtitle {
+  font-size: 1.2rem;
+  color: #666;
+  margin-bottom: 2rem;
+}
+
+.sign-in-button {
+  background-color: #4285f4;
+  color: white;
+  border: none;
+  padding: 0.8rem 2rem;
+  font-size: 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.sign-in-button:hover {
+  background-color: #3367d6;
+}
+
+.app-preview {
+  margin-top: 4rem;
+}
+
+.preview-image {
+  max-width: 100%;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
 }
 </style>

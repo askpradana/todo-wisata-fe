@@ -1,69 +1,44 @@
 <template>
-  <div class="neobrut-container">
-    <div class="neobrut-main">
-      <section class="register-form neobrut-box">
-        <h2 class="form-title">Register</h2>
-        <div v-if="successMessage" class="neobrut-message neobrut-success">
-          {{ successMessage }}
+  <div class="minimalist-container">
+    <div class="minimalist-form-container">
+      <h1 class="minimalist-title">Register</h1>
+      <form @submit.prevent="handleRegister" class="minimalist-form">
+        <div class="minimalist-form-group">
+          <label for="username">Username</label>
+          <input type="text" id="username" v-model="username" required class="minimalist-input" />
         </div>
-        <div v-if="errorMessage" class="neobrut-message neobrut-error">
-          {{ errorMessage }}
+        <div class="minimalist-form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" v-model="email" required class="minimalist-input" />
         </div>
-        <form @submit.prevent="handleRegister">
-          <div class="form-group">
-            <label for="username">Username</label>
-            <input type="text" id="username" v-model="username" required class="neobrut-input" />
+        <div class="minimalist-form-group">
+          <label for="password">Password</label>
+          <div class="minimalist-password-input">
+            <input
+              :type="showPassword ? 'text' : 'password'"
+              id="password"
+              v-model="password"
+              required
+              class="minimalist-input"
+            />
+            <button
+              type="button"
+              @click="togglePasswordVisibility"
+              class="minimalist-password-toggle"
+            >
+              {{ showPassword ? '👁️' : '👁️‍🗨️' }}
+            </button>
           </div>
-          <div class="form-group">
-            <label for="email">Email</label>
-            <input type="email" id="email" v-model="email" required class="neobrut-input" />
-          </div>
-          <div class="form-group">
-            <label for="password">Password</label>
-            <div class="password-input-wrapper">
-              <input
-                :type="showPassword ? 'text' : 'password'"
-                id="password"
-                v-model="password"
-                required
-                class="neobrut-input"
-              />
-              <button
-                type="button"
-                class="password-toggle-btn"
-                @click="togglePasswordVisibility('password')"
-              >
-                {{ showPassword ? '👁️' : '👁️‍🗨️' }}
-              </button>
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="confirmPassword">Confirm Password</label>
-            <div class="password-input-wrapper">
-              <input
-                :type="showConfirmPassword ? 'text' : 'password'"
-                id="confirmPassword"
-                v-model="confirmPassword"
-                required
-                class="neobrut-input"
-              />
-              <button
-                type="button"
-                class="password-toggle-btn"
-                @click="togglePasswordVisibility('confirm')"
-              >
-                {{ showConfirmPassword ? '👁️' : '👁️‍🗨️' }}
-              </button>
-            </div>
-          </div>
-          <button type="submit" class="neobrut-btn neobrut-btn-primary" :disabled="isLoading">
-            {{ isLoading ? 'Registering...' : 'Register' }}
-          </button>
-        </form>
-        <p class="switch-form">
-          Already have an account? <a @click="goToLogin" class="neobrut-link">Log In</a>
-        </p>
-      </section>
+        </div>
+        <button type="submit" class="minimalist-button" :disabled="isLoading">
+          {{ isLoading ? 'Registering...' : 'Register' }}
+        </button>
+      </form>
+      <p class="minimalist-message" v-if="successMessage">{{ successMessage }}</p>
+      <p class="minimalist-message error" v-if="errorMessage">{{ errorMessage }}</p>
+      <p class="minimalist-switch-form">
+        Already have an account? <a @click="goToLogin" class="minimalist-link">Log In</a>
+      </p>
     </div>
   </div>
 </template>
@@ -81,19 +56,13 @@ export default defineComponent({
     const username = ref('')
     const email = ref('')
     const password = ref('')
-    const confirmPassword = ref('')
+    const showPassword = ref(false)
     const successMessage = ref('')
     const errorMessage = ref('')
-    const showPassword = ref(false)
-    const showConfirmPassword = ref(false)
 
     const handleRegister = async () => {
       errorMessage.value = ''
       successMessage.value = ''
-      if (password.value !== confirmPassword.value) {
-        errorMessage.value = 'Passwords do not match'
-        return
-      }
       try {
         const result = await authStore.register(username.value, email.value, password.value)
         if (result) {
@@ -114,81 +83,101 @@ export default defineComponent({
       router.push('/login')
     }
 
-    const togglePasswordVisibility = (field) => {
-      if (field === 'password') {
-        showPassword.value = !showPassword.value
-      } else if (field === 'confirm') {
-        showConfirmPassword.value = !showConfirmPassword.value
-      }
+    const togglePasswordVisibility = () => {
+      showPassword.value = !showPassword.value
     }
 
     return {
       username,
       email,
       password,
-      confirmPassword,
+      showPassword,
       handleRegister,
       goToLogin,
+      togglePasswordVisibility,
       isLoading: authStore.isLoading,
       successMessage,
-      errorMessage,
-      showPassword,
-      showConfirmPassword,
-      togglePasswordVisibility
+      errorMessage
     }
   }
 })
 </script>
 
 <style scoped>
-.register-form {
+.minimalist-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #f9f9f9;
+}
+
+.minimalist-form-container {
+  background-color: #ffffff;
   padding: 2rem;
-  border: 6px solid #000;
-  box-shadow: 12px 12px 0 #000;
-}
-
-.form-title {
-  font-size: 2.5rem;
-  margin-bottom: 2rem;
-  text-transform: uppercase;
-  color: #000;
-  text-align: center;
-}
-
-.form-group {
-  margin-bottom: 1.5rem;
-}
-
-label {
-  display: block;
-  margin-bottom: 0.5rem;
-  font-weight: bold;
-  font-size: 1rem;
-  color: #000;
-  text-transform: uppercase;
-}
-
-.neobrut-input {
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   width: 100%;
-  padding: 0.8rem;
-  font-size: 1rem;
-  border: 4px solid #000;
-  background-color: #fff;
-  transition:
-    transform 0.1s,
-    box-shadow 0.1s;
-  box-sizing: border-box;
+  max-width: 400px;
 }
 
-.neobrut-input:focus {
-  outline: none;
-  transform: translate(-4px, -4px);
-  box-shadow: 4px 4px 0 #000;
-}
-
-.switch-form {
-  margin-top: 1.5rem;
-  font-size: 0.9rem;
+.minimalist-title {
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
   text-align: center;
+}
+
+.minimalist-form-group {
+  margin-bottom: 1rem;
+}
+
+.minimalist-password-input {
+  position: relative;
+}
+
+.minimalist-password-toggle {
+  position: absolute;
+  right: 0.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.minimalist-button {
+  width: 100%;
+  padding: 0.75rem;
+  font-size: 1rem;
+  background-color: #4285f4;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.minimalist-button:hover {
+  background-color: #3367d6;
+}
+
+.minimalist-message {
+  margin-top: 1rem;
+  text-align: center;
+}
+
+.minimalist-message.error {
+  color: #ff4757;
+}
+
+.minimalist-switch-form {
+  margin-top: 1rem;
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+.minimalist-link {
+  color: #4285f4;
+  cursor: pointer;
 }
 </style>

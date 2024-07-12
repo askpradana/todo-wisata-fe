@@ -2,15 +2,6 @@
 import { defineStore } from 'pinia'
 import axios from 'axios'
 
-// const colorMap = {
-//   red: "#ff0000",
-//   purple: "#800080",
-//   blue: "#0000ff",
-//   green: "#008000",
-//   yellow: "#ffff00",
-//   default: "transparent"
-// }
-
 export const useTodoStore = defineStore('todo', {
   state: () => ({
     todos: [],
@@ -21,12 +12,16 @@ export const useTodoStore = defineStore('todo', {
   actions: {
     async fetchTodos() {
       this.isLoading = true
+      this.error = null
       try {
         const response = await axios.get(`${import.meta.env.VITE_API_URL}/todos`)
         this.todos = response.data.todoList
         this.username = response.data.username
       } catch (error) {
-        this.error = error.response?.data?.message || 'Failed to fetch todos'
+        this.error =
+          error.response?.status === 401 || error.response?.status === 400
+            ? 'UNAUTHORIZED'
+            : error.response?.data?.message || 'An error occurred while fetching todos'
       } finally {
         this.isLoading = false
       }

@@ -1,60 +1,58 @@
 <template>
-  <div v-if="isOpen" class="neobrut-dialog-overlay" @click="closeDialog">
-    <div class="neobrut-dialog" @click.stop>
-      <h2 class="neobrut-dialog-title">Add New Todo</h2>
-      <form @submit.prevent="addTodo" class="neobrut-form">
-        <div class="neobrut-input-group">
-          <label for="title" class="neobrut-label">Title</label>
+  <div v-if="isOpen" class="minimalist-overlay" @click="closeDialog">
+    <div class="minimalist-dialog" @click.stop>
+      <h2 class="minimalist-dialog-title">Add New Task</h2>
+      <form @submit.prevent="addTodo" class="minimalist-form">
+        <div class="minimalist-form-group">
+          <label for="title">Title</label>
           <input
-            id="title"
             v-model="newTodo.title"
-            placeholder="What needs to be done?"
+            id="title"
             required
-            class="neobrut-input"
+            class="minimalist-input"
+            placeholder="Task title"
           />
         </div>
-        <div class="neobrut-input-group">
-          <label for="description" class="neobrut-label">Description</label>
+
+        <div class="minimalist-form-group">
+          <label for="description">Description</label>
           <textarea
-            id="description"
             v-model="newTodo.description"
-            placeholder="Add some details..."
-            class="neobrut-input neobrut-textarea"
+            id="description"
+            class="minimalist-input minimalist-textarea"
+            placeholder="Description (optional)"
           ></textarea>
         </div>
-        <div class="neobrut-input-group">
-          <label for="color" class="neobrut-label">Color</label>
-          <div class="neobrut-color-picker">
+
+        <div class="minimalist-form-group">
+          <label>Color</label>
+          <div class="minimalist-color-picker">
             <button
               v-for="color in colors"
               :key="color.value"
               type="button"
-              :class="['neobrut-color-option', { selected: newTodo.color === color.value }]"
+              :class="['minimalist-color-option', { selected: newTodo.color === color.value }]"
               :style="{ backgroundColor: color.hex }"
               @click="newTodo.color = color.value"
-            >
-              {{ color.value === newTodo.color ? '✓' : '' }}
-            </button>
+            ></button>
           </div>
         </div>
-        <div class="neobrut-input-group">
-          <label for="reminder" class="neobrut-label">Reminder</label>
+
+        <div class="minimalist-form-group">
+          <label for="reminder">Reminder</label>
           <input
-            id="reminder"
             v-model="newTodo.reminder"
+            id="reminder"
             type="datetime-local"
-            class="neobrut-input"
+            class="minimalist-input"
           />
         </div>
-        <div class="neobrut-dialog-actions">
-          <button
-            type="button"
-            @click="closeDialog"
-            class="neobrut-button neobrut-button-secondary"
-          >
+
+        <div class="minimalist-form-actions">
+          <button type="button" @click="closeDialog" class="minimalist-button secondary">
             Cancel
           </button>
-          <button type="submit" class="neobrut-button neobrut-button-primary">Add Todo</button>
+          <button type="submit" class="minimalist-button primary">Add Task</button>
         </div>
       </form>
     </div>
@@ -108,7 +106,7 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.neobrut-dialog-overlay {
+.minimalist-overlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -121,131 +119,124 @@ export default defineComponent({
   z-index: 1000;
 }
 
-.neobrut-dialog {
+.minimalist-dialog {
   background-color: #fff;
-  border: 4px solid #000;
-  box-shadow: 12px 12px 0 #000;
-  padding: 30px;
+  border-radius: 8px;
+  padding: 2rem;
   width: 90%;
   max-width: 500px;
-  animation: pop-in 0.3s ease-out;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-@keyframes pop-in {
-  0% {
-    transform: scale(0.8);
-    opacity: 0;
-  }
-  100% {
-    transform: scale(1);
-    opacity: 1;
-  }
+.minimalist-dialog-title {
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+  text-align: center;
 }
 
-.neobrut-dialog-title {
-  font-size: 2rem;
-  color: #000;
-  margin-bottom: 30px;
-  text-transform: uppercase;
-  border-bottom: 4px solid #000;
-  padding-bottom: 10px;
-  display: flex;
-  align-items: center;
+.minimalist-form-group {
+  margin-bottom: 1.5rem;
 }
 
-.neobrut-form {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.neobrut-input-group {
-  display: flex;
-  flex-direction: column;
-}
-
-.neobrut-label {
-  font-size: 1.2rem;
-  font-weight: bold;
-  margin-bottom: 5px;
-  text-transform: uppercase;
-}
-
-.neobrut-input,
-.neobrut-textarea {
-  padding: 10px;
-  font-size: 1rem;
-  border: 3px solid #000;
-  background-color: #fff;
-  transition: box-shadow 0.2s;
-}
-
-.neobrut-input:focus,
-.neobrut-textarea:focus {
-  outline: none;
-  box-shadow: 4px 4px 0 #000;
-}
-
-.neobrut-textarea {
+.minimalist-textarea {
   min-height: 100px;
   resize: vertical;
 }
 
-.neobrut-color-picker {
+.minimalist-color-picker {
   display: flex;
-  gap: 10px;
+  gap: 0.5rem;
 }
 
-.neobrut-color-option {
-  width: 40px;
-  height: 40px;
-  border: 3px solid #000;
+.minimalist-color-option {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 2px solid transparent;
   cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.minimalist-color-option:hover {
+  transform: scale(1.1);
+}
+
+.minimalist-color-option.selected {
+  border-color: #4285f4;
+}
+
+.minimalist-checkbox-container {
   display: flex;
-  justify-content: center;
   align-items: center;
-  font-size: 1.2rem;
-  color: #000;
-  transition: transform 0.2s;
+  cursor: pointer;
+  font-size: 1rem;
 }
 
-.neobrut-color-option:hover,
-.neobrut-color-option.selected {
-  transform: translate(-2px, -2px);
-  box-shadow: 4px 4px 0 #000;
+.minimalist-checkbox-container input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
 }
 
-.neobrut-dialog-actions {
+.minimalist-checkmark {
+  height: 20px;
+  width: 20px;
+  background-color: #eee;
+  border-radius: 4px;
+  margin-right: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.minimalist-checkbox-container:hover input ~ .minimalist-checkmark {
+  background-color: #ccc;
+}
+
+.minimalist-checkbox-container input:checked ~ .minimalist-checkmark {
+  background-color: #4285f4;
+}
+
+.minimalist-checkmark:after {
+  content: '';
+  display: none;
+  width: 5px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+.minimalist-checkbox-container input:checked ~ .minimalist-checkmark:after {
+  display: block;
+}
+
+.minimalist-form-actions {
   display: flex;
   justify-content: flex-end;
-  gap: 15px;
-  margin-top: 20px;
+  gap: 1rem;
 }
 
-.neobrut-button {
-  padding: 10px 20px;
+.minimalist-button {
+  padding: 0.75rem 1.5rem;
   font-size: 1rem;
-  font-weight: bold;
-  text-transform: uppercase;
-  border: 3px solid #000;
+  border: none;
+  border-radius: 4px;
   cursor: pointer;
-  transition:
-    transform 0.2s,
-    box-shadow 0.2s;
+  transition: background-color 0.3s ease;
 }
 
-.neobrut-button:hover {
-  transform: translate(-2px, -2px);
-  box-shadow: 4px 4px 0 #000;
+.minimalist-button.primary {
+  background-color: #4285f4;
+  color: white;
 }
 
-.neobrut-button-secondary {
-  background-color: #ccc;
-  color: #000;
+.minimalist-button.secondary {
+  background-color: #e0e0e0;
+  color: #333;
 }
 
-.neobrut-button-primary {
-  background-color: #ff6b6b;
-  color: #000;
+.minimalist-button:hover {
+  opacity: 0.9;
 }
 </style>

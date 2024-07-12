@@ -1,55 +1,71 @@
+<!-- src/views/loggedin/LoggedinHomeView.vue -->
 <template>
-  <div class="neobrut-container">
-    <div class="neobrut-header">
-      <h1 class="neobrut-title">Welcome, {{ username }}!</h1>
-      <div class="between">
-        <button @click="goToMyDay" class="neobrut-button neobrut-myday-button">My Day</button>
-        <button @click="handleLogout" class="neobrut-button neobrut-logout-button">Logout</button>
+  <div class="minimalist-container">
+    <header class="minimalist-header">
+      <h1 class="minimalist-title">{{ username }}'s Tasks</h1>
+      <div class="header-actions">
+        <button @click="goToMyDay" class="minimalist-button">My Day</button>
+        <button @click="handleLogout" class="minimalist-button logout-button">Logout</button>
       </div>
-    </div>
-    <div v-if="isLoading" class="neobrut-loading">Loading...</div>
-    <div v-else-if="error" class="neobrut-error">{{ error }}</div>
-    <div v-else>
-      <div class="neobrut-todo-header">
-        <h2 class="neobrut-subtitle">Your Todos</h2>
-        <button @click="toggleHideCompleted" class="neobrut-button neobrut-toggle-button">
-          {{ hideCompleted ? 'Show Completed' : 'Hide Completed' }}
-        </button>
-      </div>
-      <div v-if="filteredTodos.length > 0" class="neobrut-todo-list">
-        <div v-for="todo in filteredTodos" :key="todo.id" class="neobrut-todo-item-wrapper">
-          <EditTodoItem
-            v-if="editingTodo === todo.id"
-            :todo="todo"
-            @save="saveTodo"
-            @cancel="cancelEdit"
-          />
-          <div v-else class="neobrut-todo-item" :class="[`neobrut-todo-color-${todo.color}`]">
-            <input
-              type="checkbox"
-              :checked="todo.completed"
-              @change="toggleTodoCompletion(todo.id)"
-              class="neobrut-checkbox"
-            />
-            <div class="neobrut-todo-content" @click="startEditing(todo.id)">
-              <span :class="{ completed: todo.completed }" class="neobrut-todo-title">
-                {{ todo.title }}
-              </span>
-              <span class="neobrut-todo-description">{{ todo.description }}</span>
-              <span v-if="todo.reminder" class="neobrut-todo-reminder">
-                Reminder: {{ new Date(todo.reminder).toLocaleString() }}
-              </span>
+    </header>
+
+    <main class="minimalist-main">
+      <div v-if="isLoading" class="minimalist-loading">Loading tasks...</div>
+      <div v-else-if="error" class="minimalist-error">{{ error }}</div>
+      <div v-else>
+        <div class="minimalist-todo-header">
+          <h2 class="minimalist-subtitle">Tasks</h2>
+          <button @click="toggleHideCompleted" class="minimalist-button toggle-button">
+            {{ hideCompleted ? 'Show Completed' : 'Hide Completed' }}
+          </button>
+        </div>
+
+        <ul v-if="filteredTodos.length > 0" class="minimalist-todo-list">
+          <li
+            v-for="todo in filteredTodos"
+            :key="todo.id"
+            class="minimalist-todo-item"
+            :class="[`todo-color-${todo.color}`]"
+          >
+            <div v-if="editingTodoId === todo.id" class="minimalist-edit-wrapper">
+              <UpdateTask :todo="todo" @save="saveTodo" @cancel="cancelEdit" />
             </div>
-            <button @click="deleteTodo(todo.id)" class="neobrut-delete-btn">🗑️</button>
-          </div>
+            <div v-else class="minimalist-todo-content">
+              <input
+                type="checkbox"
+                :checked="todo.completed"
+                @change="toggleTodoCompletion(todo.id)"
+                class="minimalist-checkbox"
+              />
+              <div class="minimalist-todo-text">
+                <h3 :class="{ completed: todo.completed }" class="minimalist-todo-title">
+                  {{ todo.title }}
+                </h3>
+                <p v-if="todo.description" class="minimalist-todo-description">
+                  {{ todo.description }}
+                </p>
+                <p v-if="todo.reminder" class="minimalist-todo-reminder">
+                  {{ new Date(todo.reminder).toLocaleString() }}
+                </p>
+              </div>
+              <div class="minimalist-todo-actions">
+                <button @click="startEditing(todo.id)" class="minimalist-action-btn edit-btn">
+                  Edit
+                </button>
+                <button @click="deleteTodo(todo.id)" class="minimalist-action-btn delete-btn">
+                  Delete
+                </button>
+              </div>
+            </div>
+          </li>
+        </ul>
+        <div v-else class="minimalist-empty-list">
+          <p>{{ emptyListMessage }}</p>
         </div>
       </div>
-      <div v-else class="neobrut-empty-list">
-        <p>{{ emptyListMessage }}</p>
-        <span class="neobrut-empty-icon">📝</span>
-      </div>
-    </div>
-    <button @click="openAddTodoDialog" class="neobrut-fab">+</button>
+    </main>
+
+    <button @click="openAddTodoDialog" class="minimalist-fab">+</button>
     <AddTodoDialog
       :is-open="isAddTodoDialogOpen"
       @close="closeAddTodoDialog"
@@ -65,13 +81,13 @@ import { useTodoStore } from '@/stores/tasklist'
 import { useAuthStore } from '@/stores/auth'
 import { storeToRefs } from 'pinia'
 import AddTodoDialog from '@/components/CreateNewTask.vue'
-import EditTodoItem from '@/components/UpdateTask.vue'
+import UpdateTask from '@/components/UpdateTask.vue'
 
 export default defineComponent({
   name: 'LoggedinHomeView',
   components: {
     AddTodoDialog,
-    EditTodoItem
+    UpdateTask
   },
   setup() {
     const todoStore = useTodoStore()
@@ -79,7 +95,7 @@ export default defineComponent({
     const router = useRouter()
     const { todos, username, isLoading, error } = storeToRefs(todoStore)
     const isAddTodoDialogOpen = ref(false)
-    const editingTodo = ref(null)
+    const editingTodoId = ref(null)
     const hideCompleted = ref(true)
 
     const filteredTodos = computed(() => {
@@ -114,7 +130,7 @@ export default defineComponent({
 
     const handleLogout = async () => {
       await authStore.logout()
-      router.push({ path: '/' })
+      router.push('/')
     }
 
     const openAddTodoDialog = () => {
@@ -126,16 +142,16 @@ export default defineComponent({
     }
 
     const startEditing = (id) => {
-      editingTodo.value = id
+      editingTodoId.value = id
     }
 
     const saveTodo = async (updatedTodo) => {
       await todoStore.updateTodo(updatedTodo)
-      editingTodo.value = null
+      editingTodoId.value = null
     }
 
     const cancelEdit = () => {
-      editingTodo.value = null
+      editingTodoId.value = null
     }
 
     const deleteTodo = async (id) => {
@@ -163,7 +179,7 @@ export default defineComponent({
       isAddTodoDialogOpen,
       openAddTodoDialog,
       closeAddTodoDialog,
-      editingTodo,
+      editingTodoId,
       startEditing,
       saveTodo,
       cancelEdit,
@@ -177,105 +193,83 @@ export default defineComponent({
 })
 </script>
 
-<style>
-.between {
+<style scoped>
+.minimalist-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem;
+  font-family: Arial, sans-serif;
+}
+
+.minimalist-header {
   display: flex;
-  flex-direction: row;
   justify-content: space-between;
-}
-.neobrut-title {
-  font-size: 2.5rem;
-  color: #000;
-  text-transform: uppercase;
-  margin: 0;
+  align-items: center;
+  margin-bottom: 2rem;
 }
 
-.neobrut-subtitle {
-  font-size: 1.8rem;
-  color: #000;
-  margin-top: 30px;
-  margin-bottom: 15px;
-  text-transform: uppercase;
-  border-bottom: 4px solid #000;
-  display: inline-block;
+.minimalist-title {
+  font-size: 1.5rem;
+  font-weight: 500;
 }
 
-.neobrut-button {
-  padding: 10px 20px;
-  font-size: 1rem;
-  font-weight: bold;
-  text-transform: uppercase;
-  border: 3px solid #000;
-  background-color: #fff;
+.minimalist-button {
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  border: none;
+  border-radius: 4px;
   cursor: pointer;
-  transition:
-    transform 0.2s,
-    box-shadow 0.2s;
+  transition: background-color 0.3s ease;
 }
 
-.neobrut-button:hover {
-  transform: translate(-2px, -2px);
-  box-shadow: 4px 4px 0 #000;
-}
-
-.neobrut-logout-button {
+.logout-button {
   background-color: #ff4757;
-  color: #fff;
+  color: white;
 }
 
-.neobrut-todo-list {
+.minimalist-todo-header {
   display: flex;
-  flex-direction: column;
-  gap: 15px;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
 }
 
-.neobrut-todo-item {
-  background-color: #fff;
-  border: 3px solid #000;
-  padding: 15px;
-  display: flex;
-  align-items: flex-start;
-  gap: 15px;
-  box-shadow: 5px 5px 0 #000;
-  transition:
-    transform 0.2s,
-    box-shadow 0.2s;
-}
-
-.neobrut-todo-item:hover {
-  transform: translate(-2px, -2px);
-  box-shadow: 7px 7px 0 #000;
-}
-
-.neobrut-checkbox {
-  width: 20px;
-  height: 20px;
-  border: 2px solid #000;
-  appearance: none;
-  cursor: pointer;
-  position: relative;
-}
-
-.neobrut-checkbox:checked::after {
-  content: '✔';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-size: 16px;
-  color: #000;
-}
-
-.neobrut-todo-content {
-  flex-grow: 1;
-  cursor: pointer;
-}
-
-.neobrut-todo-title {
+.minimalist-subtitle {
   font-size: 1.2rem;
-  font-weight: bold;
-  display: block;
-  margin-bottom: 5px;
+  font-weight: 500;
+}
+
+.minimalist-todo-list {
+  list-style-type: none;
+  padding: 0;
+}
+
+.minimalist-todo-item {
+  background-color: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  margin-bottom: 0.5rem;
+  transition: box-shadow 0.3s ease;
+}
+
+.minimalist-todo-content {
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+}
+
+.minimalist-checkbox {
+  margin-right: 1rem;
+}
+
+.minimalist-todo-text {
+  flex-grow: 1;
+}
+
+.minimalist-todo-title {
+  font-size: 1rem;
+  font-weight: 500;
+  margin: 0;
 }
 
 .completed {
@@ -283,115 +277,68 @@ export default defineComponent({
   color: #888;
 }
 
-.neobrut-todo-description {
+.minimalist-todo-description,
+.minimalist-todo-reminder {
   font-size: 0.9rem;
-  color: #555;
-  display: block;
-  margin-bottom: 5px;
+  color: #666;
+  margin-top: 0.25rem;
 }
 
-.neobrut-todo-reminder {
-  font-size: 0.8rem;
-  color: #007bff;
-  display: block;
-}
-
-.neobrut-delete-btn {
+.minimalist-action-btn {
   background: none;
   border: none;
-  font-size: 1.2rem;
+  font-size: 0.9rem;
   cursor: pointer;
-  padding: 5px;
-  transition: transform 0.2s;
+  padding: 0.25rem;
+  color: #4285f4;
 }
 
-.neobrut-delete-btn:hover {
-  transform: scale(1.2);
+.delete-btn {
+  color: #ff4757;
 }
 
-.neobrut-fab {
+.minimalist-fab {
   position: fixed;
-  bottom: 30px;
-  right: 30px;
-  width: 60px;
-  height: 60px;
+  bottom: 2rem;
+  right: 2rem;
+  width: 3rem;
+  height: 3rem;
   border-radius: 50%;
-  background-color: #ff6b6b;
-  color: #fff;
-  font-size: 2rem;
-  border: 3px solid #000;
-  box-shadow: 5px 5px 0 #000;
+  background-color: #4285f4;
+  color: white;
+  font-size: 1.5rem;
+  border: none;
   display: flex;
   justify-content: center;
   align-items: center;
   cursor: pointer;
-  transition:
-    transform 0.2s,
-    box-shadow 0.2s;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
-.neobrut-fab:hover {
-  transform: translate(-2px, -2px);
-  box-shadow: 7px 7px 0 #000;
-}
-
-.neobrut-empty-list {
+.minimalist-empty-list {
   text-align: center;
-  padding: 40px;
-  background-color: #f0f0f0;
-  border: 3px solid #000;
-  box-shadow: 5px 5px 0 #000;
-  margin-top: 20px;
+  padding: 2rem;
+  background-color: #f9f9f9;
+  border-radius: 4px;
+  color: #666;
 }
 
-.neobrut-empty-icon {
-  font-size: 48px;
-  display: block;
-  margin-top: 20px;
+.todo-color-red {
+  border-left: 4px solid #ff4757;
 }
-
-.neobrut-todo-color-red {
-  border-color: #ff0000;
+.todo-color-purple {
+  border-left: 4px solid #9c27b0;
 }
-.neobrut-todo-color-purple {
-  border-color: #800080;
+.todo-color-blue {
+  border-left: 4px solid #4285f4;
 }
-.neobrut-todo-color-blue {
-  border-color: #0000ff;
+.todo-color-green {
+  border-left: 4px solid #4caf50;
 }
-.neobrut-todo-color-green {
-  border-color: #008000;
+.todo-color-yellow {
+  border-left: 4px solid #ffeb3b;
 }
-.neobrut-todo-color-yellow {
-  border-color: #ffff00;
-}
-
-.todo-list-move,
-.todo-list-enter-active,
-.todo-list-leave-active {
-  transition: all 0.5s ease;
-}
-
-.todo-list-enter-from,
-.todo-list-leave-to {
-  opacity: 0;
-  transform: translateX(30px);
-}
-
-.todo-list-leave-active {
-  position: absolute;
-}
-
-.neobrut-todo-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-}
-
-.neobrut-toggle-button {
-  font-size: 0.9rem;
-  padding: 8px 16px;
-  background-color: #f0f0f0;
+.todo-color-default {
+  border-left: 4px solid transparent;
 }
 </style>
