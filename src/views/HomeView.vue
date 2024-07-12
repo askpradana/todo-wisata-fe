@@ -5,7 +5,7 @@
         <span class="checkmark">✓</span>
         <span class="app-name">minimalist</span>
       </div>
-      <div class="made-by">Made with ♥ by <a href="#" class="author-link">Your Name</a></div>
+      <div class="made-by">Made with ♥ by <a href="#" class="author-link">nfldyprdn</a></div>
     </header>
 
     <main class="minimalist-main">
@@ -17,9 +17,9 @@
         <button @click="navigateToRegister" class="sign-in-button">Get started</button>
       </div>
 
-      <!-- <div class="app-preview">
-        <img src="@/assets/app-preview.png" alt="App Preview" class="preview-image">
-      </div> -->
+      <div class="app-preview">
+        <img src="@/assets/app-preview.png" alt="App Preview" class="preview-image" />
+      </div>
     </main>
   </div>
 </template>
