@@ -27,7 +27,7 @@ Classify the features of the todo app you picked into the following categories:
 
 ## Task #3: Improve upon the todo app
 
-Replicate the todo app into a webapp and improve upon it. You can add new features or modify existing features to make the todo app better.
+For live preview of the apps, [open this link](https://todo-wisata-fe.pages.dev/)
 
 ## Requirements
 

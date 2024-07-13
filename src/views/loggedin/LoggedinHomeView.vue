@@ -6,12 +6,14 @@ import { useAuthStore } from '@/stores/auth'
 import { storeToRefs } from 'pinia'
 import AddTodoDialog from '@/components/CreateNewTask.vue'
 import UpdateTask from '@/components/UpdateTask.vue'
+import ConfirmDialog from '@/components/DeleteTask.vue'
 
 export default defineComponent({
   name: 'LoggedinHomeView',
   components: {
     AddTodoDialog,
-    UpdateTask
+    UpdateTask,
+    ConfirmDialog
   },
   methods: {
     getBorderColor(color) {
@@ -34,6 +36,7 @@ export default defineComponent({
     const isAddTodoDialogOpen = ref(false)
     const editingTodoId = ref(null)
     const hideCompleted = ref(true)
+    const isConfirmDialogOpen = ref(false)
 
     const filteredTodos = computed(() => {
       let filtered = [...todos.value]
@@ -91,12 +94,6 @@ export default defineComponent({
       editingTodoId.value = null
     }
 
-    const deleteTodo = async (id) => {
-      if (confirm('Are you sure you want to delete this todo?')) {
-        await todoStore.deleteTodo(id)
-      }
-    }
-
     const toggleHideCompleted = () => {
       hideCompleted.value = !hideCompleted.value
     }
@@ -120,11 +117,11 @@ export default defineComponent({
       startEditing,
       saveTodo,
       cancelEdit,
-      deleteTodo,
       hideCompleted,
       toggleHideCompleted,
       emptyListMessage,
-      goToMyDay
+      goToMyDay,
+      isConfirmDialogOpen
     }
   }
 })
@@ -199,7 +196,7 @@ export default defineComponent({
                 <button @click="startEditing(todo.id)" class="text-blue-500 hover:text-blue-600">
                   Edit
                 </button>
-                <button @click="deleteTodo(todo.id)" class="text-red-500 hover:text-red-600">
+                <button @click="openConfirmDialog(todo.id)" class="text-red-500 hover:text-red-600">
                   Delete
                 </button>
               </div>
@@ -222,6 +219,14 @@ export default defineComponent({
       :is-open="isAddTodoDialogOpen"
       @close="closeAddTodoDialog"
       @add-todo="addNewTodo"
+    />
+
+    <ConfirmDialog
+      :is-open="isConfirmDialogOpen"
+      title="Confirm Deletion"
+      message="Are you sure you want to delete this task?"
+      @confirm="confirmDelete"
+      @cancel="closeConfirmDialog"
     />
   </div>
 </template>

@@ -17,7 +17,7 @@ const navigateToRegister = () => {
     <header class="flex justify-between items-center mb-16">
       <div class="flex items-center">
         <span class="bg-blue-500 text-white py-1 px-2 rounded font-bold mr-2">✓</span>
-        <span class="font-medium text-xl">minimalist</span>
+        <span class="font-medium text-xl">Geulist</span>
       </div>
       <div class="text-sm text-gray-600">
         Made with ♥ by <a href="#" class="text-blue-500 no-underline">nfldyprdn</a>
@@ -47,7 +47,7 @@ const navigateToRegister = () => {
 
       <div class="mt-16">
         <img
-          src="@/assets/app-preview.png"
+          src="@/assets/app-preview.webp"
           alt="App Preview"
           class="max-w-full shadow-md rounded-lg"
         />
