@@ -15,7 +15,18 @@ export const useTodoStore = defineStore('todo', {
       this.error = null
       try {
         const response = await axios.get(`${import.meta.env.VITE_API_URL}/todos`)
-        this.todos = response.data.todoList
+        const todoList = response.data.todoList
+
+        todoList.sort((a, b) => {
+          if (a.reminder && b.reminder) {
+            return new Date(b.reminder) - new Date(a.reminder)
+          }
+          if (a.reminder) return -1
+          if (b.reminder) return 1
+          return b.id - a.id
+        })
+
+        this.todos = todoList
         this.username = response.data.username
       } catch (error) {
         this.error =
