@@ -1,41 +1,15 @@
-# todo-app
+# Geulist
 
-This template should help get you started developing with Vue 3 in Vite.
+a simlpe todo list apps for managing tasks
 
-## Recommended IDE Setup
+## Local use
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+To run this apps on local follow these steps:
 
-## Customize configuration
-
-See [Vite Configuration Reference](https://vitejs.dev/config/).
-
-## Project Setup
-
-```sh
-npm install
-```
-
-### Compile and Hot-Reload for Development
-
-```sh
-npm run dev
-```
-
-### Compile and Minify for Production
-
-```sh
-npm run build
-```
-
-### Run Unit Tests with [Vitest](https://vitest.dev/)
-
-```sh
-npm run test:unit
-```
-
-### Lint with [ESLint](https://eslint.org/)
-
-```sh
-npm run lint
-```
+1. git clone 'this repo url'
+   > git clone https://github.com/askpradana/todo-wisata-fe
+2. create environment from .env.example
+   > cp .env.example .env
+3. fill the .env with your own configuration
+4. run the apps (make sure to run backend app first)
+   > npm run dev
