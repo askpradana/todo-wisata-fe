@@ -45,25 +45,3 @@ For live preview of the apps, [open this link](https://todo-wisata-fe.pages.dev/
 2. Design, responsiveness, and usability
 3. Code quality and structure
 4. Documentation
-
-## Submission
-
-You have 7 days to complete the task, starting from the day you're assigned the task.
-
-Submit your application letter by sending an email to [adrian@wisata.app](mailto:adrian@wisata.app) with the following:
-
-```
-Subject:
-2024-P06 Senior Software Engineer - [Your Name]
-```
-
-```
-Body:
-[Your application letter]
-```
-
-```
-Attachments:
-- [Link to repository]
-- [URL to view the application]
-```
